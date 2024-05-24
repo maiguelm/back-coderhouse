@@ -51,6 +51,7 @@ io.on('connection', (socket) =>{
 	socket.on('addProduct', async (prod) =>{
 		const newProduct = await productManager.addProduct(prod);
 		products.push(newProduct);
+		console.log('Se agregó un producto', newProduct);
 		io.emit('updateProducts', products);
 	});
 

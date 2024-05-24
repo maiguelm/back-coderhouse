@@ -1,7 +1,6 @@
 import fs from "fs/promises";
 import { v4 as uuidv4 } from "uuid";
 
-
 export default class ProductManager {
     constructor(path) {
         this.path = path;

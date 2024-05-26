@@ -55,10 +55,11 @@ io.on('connection', (socket) =>{
 		io.emit('updateProducts', products);
 	});
 
-	socket.on('removeProduct', (prodId) =>{
+	socket.on('removeProduct', async (prodId) => {
+		await productManager.deleteProduct(prodId);
 		products = products.filter((p) => p.id !== prodId);
 		io.emit('updateProducts', products);
-	})
+	  });
 
 	socket.on('disconnetc', () =>{
 		console.log(' Desconexión con exito')

@@ -15,11 +15,21 @@ socket.on('updateProducts', (products) => {
     const productDescription = product.description;
     const productPrice = product.price;
     const productCategory = product.category;
-    
+
     li.textContent = `${productName} - ${productDescription} - $${productPrice} - ${productCategory}`;
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Eliminar';
+    deleteButton.classList.add('delete-button');
+    deleteButton.addEventListener('click', () => {
+      socket.emit('removeProduct', product.id);
+    });
+
+    li.appendChild(deleteButton);
     productList.appendChild(li);
   });
 });
+
 
 productForm.addEventListener('submit', (e) => {
   e.preventDefault();

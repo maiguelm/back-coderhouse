@@ -7,7 +7,7 @@ const productDescriptionInput = document.getElementById('product-description');
 const productPriceInput = document.getElementById('product-price');
 const productCategoryInput = document.getElementById('product-category');
 
-socket.on('updateProducts', (products) => {
+socket.on('chargeProducts', (products) => {
   productList.innerHTML = '';
   products.forEach(product => {
     const li = document.createElement('li');

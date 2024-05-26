@@ -46,7 +46,7 @@ server.listen(PORT, async () => {
 io.on('connection', (socket) =>{
 	console.log('conexion con exito');
 
-	socket.emit('updateProducts', products);
+	socket.emit('chargeProducts', products);
 
 	socket.on('addProduct', async (prod) =>{
 		const newProduct = await productManager.addProduct(prod);

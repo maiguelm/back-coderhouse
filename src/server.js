@@ -19,7 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.engine('handlebars', handlebars.engine());
 app.set('view engine', 'handlebars');
-app.set('views',`${__dirname}/../views`);
+app.set('views', `${__dirname}/../views`);
 
 app.use('/', viewsRouter)
 app.use('/api/products', productsRouter);
@@ -35,7 +35,7 @@ const productManager = new ProductManager(`${__dirname}/data/products.json`);
 
 let products = [];
 
-const loadProductsIndex = async () =>{
+const loadProductsIndex = async () => {
 	products = await productManager.getProducts();
 }
 server.listen(PORT, async () => {
@@ -43,12 +43,12 @@ server.listen(PORT, async () => {
 	console.log(`Server en puerto ${PORT}`)
 });
 
-io.on('connection', (socket) =>{
+io.on('connection', (socket) => {
 	console.log('conexion con exito');
 
 	socket.emit('chargeProducts', products);
 
-	socket.on('addProduct', async (prod) =>{
+	socket.on('addProduct', async (prod) => {
 		const newProduct = await productManager.addProduct(prod);
 		products.push(newProduct);
 		console.log('Se agregó un producto', newProduct);
@@ -59,12 +59,18 @@ io.on('connection', (socket) =>{
 		await productManager.deleteProduct(prodId);
 		products = products.filter((p) => p.id !== prodId);
 		io.emit('updateProducts', products);
-	  });
+	});
 
-	socket.on('disconnetc', () =>{
+	socket.on('updateProduct', async (prod) => {
+		const updatedProduct = await productManager.updateProduct(prod, prod.id);
+		products = products.map(p => p.id === prod.id ? updatedProduct : p);
+		io.emit('updateProducts', products);
+	});
+
+	socket.on('disconnetc', () => {
 		console.log(' Desconexión con exito')
 	})
 
 })
 
-export { io, products}
+export { io, products }

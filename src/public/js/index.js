@@ -2,10 +2,14 @@ const socket = io();
 
 const productList = document.getElementById('product-list');
 const productForm = document.getElementById('product-form');
+const productIdInput = document.getElementById('product-id');
 const productNameInput = document.getElementById('product-name');
 const productDescriptionInput = document.getElementById('product-description');
+const productCodeInput = document.getElementById('product-code');
+const productStockInput = document.getElementById('product-stock');
 const productPriceInput = document.getElementById('product-price');
 const productCategoryInput = document.getElementById('product-category');
+const productThumbnailsInput = document.getElementById('product-thumbnails');
 
 socket.on('chargeProducts', (products) => {
   productList.innerHTML = '';
@@ -13,10 +17,13 @@ socket.on('chargeProducts', (products) => {
     const li = document.createElement('li');
     const productName = product.title;
     const productDescription = product.description;
+    const productCode = product.code || '';
+    const productStock = product.stock || '';
     const productPrice = product.price;
     const productCategory = product.category;
+    const productThumbnails = product.thumbnails ? product.thumbnails.join(', ') : '';
 
-    li.textContent = `${productName} - ${productDescription} - $${productPrice} - ${productCategory}`;
+    li.textContent = `${productName} - ${productDescription} - Código: ${productCode} - Stock: ${productStock} - $${productPrice} - Categoría: ${productCategory} - Imágenes: ${productThumbnails}`;
 
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Eliminar';
@@ -25,20 +32,91 @@ socket.on('chargeProducts', (products) => {
       socket.emit('removeProduct', product.id);
     });
 
+    const updateButton = document.createElement('button');
+    updateButton.textContent = 'Actualizar';
+    updateButton.classList.add('update-button');
+    updateButton.addEventListener('click', () => {
+      productIdInput.value = product.id;
+      productNameInput.value = product.title;
+      productDescriptionInput.value = product.description;
+      productCodeInput.value = product.code || '';
+      productStockInput.value = product.stock || '';
+      productPriceInput.value = product.price;
+      productCategoryInput.value = product.category;
+      productThumbnailsInput.value = product.thumbnails ? product.thumbnails.join(', ') : '';
+      productForm.querySelector('button[type="submit"]').textContent = 'Actualizar producto';
+      productForm.scrollIntoView({ behavior: 'smooth' });
+    });
+
     li.appendChild(deleteButton);
+    li.appendChild(updateButton);
     productList.appendChild(li);
   });
 });
 
+socket.on('updateProducts', (products) => {
+  productList.innerHTML = '';
+  products.forEach(product => {
+    const li = document.createElement('li');
+    const productName = product.title;
+    const productDescription = product.description;
+    const productCode = product.code || '';
+    const productStock = product.stock || '';
+    const productPrice = product.price;
+    const productCategory = product.category;
+    const productThumbnails = product.thumbnails ? product.thumbnails.join(', ') : '';
+
+    li.textContent = `${productName} - ${productDescription} - Código: ${productCode} - Stock: ${productStock} - $${productPrice} - Categoría: ${productCategory} - Imágenes: ${productThumbnails}`;
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Eliminar';
+    deleteButton.classList.add('delete-button');
+    deleteButton.addEventListener('click', () => {
+      socket.emit('removeProduct', product.id);
+    });
+
+    const updateButton = document.createElement('button');
+    updateButton.textContent = 'Actualizar';
+    updateButton.classList.add('update-button');
+    updateButton.addEventListener('click', () => {
+      productIdInput.value = product.id;
+      productNameInput.value = product.title;
+      productDescriptionInput.value = product.description;
+      productCodeInput.value = product.code || '';
+      productStockInput.value = product.stock || '';
+      productPriceInput.value = product.price;
+      productCategoryInput.value = product.category;
+      productThumbnailsInput.value = product.thumbnails ? product.thumbnails.join(', ') : '';
+      productForm.querySelector('button[type="submit"]').textContent = 'Actualizar producto';
+      productForm.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    li.appendChild(deleteButton);
+    li.appendChild(updateButton);
+    productList.appendChild(li);
+  });
+});
 
 productForm.addEventListener('submit', (e) => {
   e.preventDefault();
+  const productId = productIdInput.value;
   const productName = productNameInput.value;
   const productDescription = productDescriptionInput.value;
+  const productCode = productCodeInput.value;
+  const productStock = productStockInput.value;
   const productPrice = productPriceInput.value;
   const productCategory = productCategoryInput.value;
-  if (productName) {
-    socket.emit('addProduct', { title: productName, description: productDescription, price: productPrice, category: productCategory });
+  const productThumbnails = productThumbnailsInput.value.split(',').map(url => url.trim());
+
+  if (productName && productDescription && productCode && productStock && productPrice && productCategory && productThumbnails) {
+    const productData = { title: productName, description: productDescription, code: productCode, stock: productStock, price: productPrice, category: productCategory, thumbnails: productThumbnails };
+    if (productId) {
+      productData.id = productId; // Include ID for update
+      socket.emit('updateProduct', productData);
+      productForm.querySelector('button[type="submit"]').textContent = 'Agregar producto';
+    } else {
+      socket.emit('addProduct', productData);
+    }
     productForm.reset();
   }
 });

@@ -1,8 +1,13 @@
 <h1>Lista de Productos</h1>
-  <ul>
-    {{#each products}}
-      <li>{{this.title}} - $ {{this.price}}</li>
-    {{/each}}
-  </ul>
+<ul>
+  {{#each products}}
+    <li>
+      <strong>{{this.title}}</strong> - ${{this.price}} 
+      {{#each this.thumbnails}}
+        <img class= "img-home" src="{{this}}">
+      {{/each}}
+    </li>
+  {{/each}}
+</ul>
 
-  <a href="/realtimeproducts"><button>Añadir Productos</button></a>
+<a href="/realtimeproducts"><button>Añadir Productos</button></a>

@@ -85,7 +85,7 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.delete-button{
+.delete-button, .update-button{
   max-height:3rem;
   margin-left: 25px;
   font-size: 15px;
@@ -97,4 +97,11 @@ ul {
 
 li {
   padding: 5px;
+}
+
+.img-home{
+  max-width: 50px; 
+  max-height: 50px;
+  border-radius: 2px;
+  padding: 0 5px;
 }

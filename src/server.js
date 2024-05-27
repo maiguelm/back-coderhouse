@@ -31,7 +31,7 @@ app.use(errorHandler);
 const PORT = 8080;
 
 
-const productManager = new ProductManager(`${__dirname}/data/products.json`);
+const productManager = new ProductManager(`${__dirname}/../data/products.json`);
 
 let products = [];
 

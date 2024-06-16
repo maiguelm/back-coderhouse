@@ -35,6 +35,7 @@ form {
 }
 input {
   color: #f9f9f9;
+  background: #151515;
   font-size: 1.2rem;
   width: 90%;
   height: 40px;

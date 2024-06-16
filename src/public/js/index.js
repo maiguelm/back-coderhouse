@@ -11,7 +11,7 @@ const productPriceInput = document.getElementById('product-price');
 const productCategoryInput = document.getElementById('product-category');
 const productThumbnailsInput = document.getElementById('product-thumbnails');
 
-socket.on('chargeProducts', (products) => {
+function renderProducts(products) {
   productList.innerHTML = '';
   products.forEach(product => {
     const li = document.createElement('li');
@@ -29,14 +29,14 @@ socket.on('chargeProducts', (products) => {
     deleteButton.textContent = 'Eliminar';
     deleteButton.classList.add('delete-button');
     deleteButton.addEventListener('click', () => {
-      socket.emit('removeProduct', product.id);
+      socket.emit('removeProduct', product._id);
     });
 
     const updateButton = document.createElement('button');
     updateButton.textContent = 'Actualizar';
     updateButton.classList.add('update-button');
     updateButton.addEventListener('click', () => {
-      productIdInput.value = product.id;
+      productIdInput.value = product._id;
       productNameInput.value = product.title;
       productDescriptionInput.value = product.description;
       productCodeInput.value = product.code || '';
@@ -52,54 +52,19 @@ socket.on('chargeProducts', (products) => {
     li.appendChild(updateButton);
     productList.appendChild(li);
   });
+}
+
+socket.on('chargeProducts', (products) => {
+  renderProducts(products);
 });
 
 socket.on('updateProducts', (products) => {
-  productList.innerHTML = '';
-  products.forEach(product => {
-    const li = document.createElement('li');
-    const productName = product.title;
-    const productDescription = product.description;
-    const productCode = product.code || '';
-    const productStock = product.stock || '';
-    const productPrice = product.price;
-    const productCategory = product.category;
-    const productThumbnails = product.thumbnails ? product.thumbnails.join(', ') : '';
-
-    li.textContent = `${productName} - ${productDescription} - Código: ${productCode} - Stock: ${productStock} - $${productPrice} - Categoría: ${productCategory} - Imágenes: ${productThumbnails}`;
-
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Eliminar';
-    deleteButton.classList.add('delete-button');
-    deleteButton.addEventListener('click', () => {
-      socket.emit('removeProduct', product.id);
-    });
-
-    const updateButton = document.createElement('button');
-    updateButton.textContent = 'Actualizar';
-    updateButton.classList.add('update-button');
-    updateButton.addEventListener('click', () => {
-      productIdInput.value = product.id;
-      productNameInput.value = product.title;
-      productDescriptionInput.value = product.description;
-      productCodeInput.value = product.code || '';
-      productStockInput.value = product.stock || '';
-      productPriceInput.value = product.price;
-      productCategoryInput.value = product.category;
-      productThumbnailsInput.value = product.thumbnails ? product.thumbnails.join(', ') : '';
-      productForm.querySelector('button[type="submit"]').textContent = 'Actualizar producto';
-      productForm.scrollIntoView({ behavior: 'smooth' });
-    });
-
-    li.appendChild(deleteButton);
-    li.appendChild(updateButton);
-    productList.appendChild(li);
-  });
+  renderProducts(products);
 });
 
 productForm.addEventListener('submit', (e) => {
   e.preventDefault();
-  const productId = productIdInput.value;
+  const productId = productIdInput.value.trim(); 
   const productName = productNameInput.value;
   const productDescription = productDescriptionInput.value;
   const productCode = productCodeInput.value;

@@ -12,7 +12,6 @@ export const getProductById = async (req, res, next) => {
     }
 };
 
-// Controlador para obtener productos por título
 export const getProductByTitle = async (req, res, next) => {
     try {
         const title = req.params.title;

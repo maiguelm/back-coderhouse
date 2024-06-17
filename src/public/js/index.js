@@ -62,6 +62,10 @@ socket.on('updateProducts', (products) => {
   renderProducts(products);
 });
 
+socket.on('error', (error) => {
+  alert(`Error: producto duplicado`);
+});
+
 productForm.addEventListener('submit', (e) => {
   e.preventDefault();
   const productId = productIdInput.value.trim(); 

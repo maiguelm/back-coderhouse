@@ -36,9 +36,10 @@ const PORT = 8080;
 
 let products = [];
 
-export const loadProductsIndex = async () => {
-    products = await productsServices.getAllProducts();
-    return products
+export const loadProductsIndex = async (limit) => {
+    const response = await productsServices.getAllProducts(limit=15);
+    products = response.docs;
+    return products.docs
 }
 
 server.listen(PORT, async () => {
@@ -52,23 +53,28 @@ io.on('connection', (socket) => {
     socket.emit('chargeProducts', products);
 
     socket.on('addProduct', async (prod) => {
-        const newProduct = await productsServices.createProduct(prod);
-        // products.push(newProduct);
-        console.log('Se agregó un producto', newProduct);
-        io.emit('updateProducts', await productsServices.getAllProducts());
+        try {
+            const newProduct = await productsServices.createProduct(prod);
+            products.push(newProduct);
+            console.log('Se agregó un producto', newProduct);
+            io.emit('updateProducts', products);
+        } catch (error) {
+            console.error('Error al agregar el producto:', error.message);
+            socket.emit('error', { message: error.message });
+        }
     });
 
     socket.on('removeProduct', async (prodId) => {
         await productsServices.deleteProduct(prodId);
         products = products.filter((p) => p._id.toString() !== prodId);
-        io.emit('updateProducts', await productsServices.getAllProducts());
+        io.emit('updateProducts', products);
     });
 
     socket.on('updateProduct', async (prod) => {
         console.log("Product ID to update:", prod.id);
         const updatedProduct = await productsServices.updateProduct(prod.id, prod);
         products = products.map(p => p._id.toString() === prod.id ? updatedProduct : p);
-        io.emit('updateProducts', await productsServices.getAllProducts());
+        io.emit('updateProducts', products);
     });
 
     socket.on('disconnect', () => {

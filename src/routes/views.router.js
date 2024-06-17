@@ -1,15 +1,18 @@
 import { Router } from 'express';
-import { loadProductsIndex } from '../server.js';
+// import { loadProductsIndex } from '../server.js';
+import * as productsServices from '../services/products.services.js';
 
 const router = Router();
 
 router.get('/', async (req, res) => {
   try {
-    const loadedProducts = await loadProductsIndex();
-    res.render('home', { products: loadedProducts });
+      const limit = req.query.limit || 15;
+      const response = await productsServices.getAllProducts(limit);
+      const products = response.docs;
+      res.render('home', { products });
   } catch (error) {
-    console.error('Error al cargar los productos:', error);
-    res.status(500).send('Error interno del servidor');
+      console.error('Error al cargar los productos:', error);
+      res.status(500).send('Error al cargar los productos');
   }
 });
 

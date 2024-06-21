@@ -1,5 +1,7 @@
 # dependencies
 node_modules
+
+# files and directories
 .env
-./src/managers
-./src/data
+/src/managers
+/src/data

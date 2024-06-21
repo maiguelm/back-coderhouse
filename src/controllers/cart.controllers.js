@@ -29,21 +29,6 @@ export const getCartById = async (req, res) => {
     }
 };
 
-// export const addToCart = async (req, res, next) => {
-//     try {
-//         const { idCart } = req.params;
-//         const { idProd } = req.params;
-//         const newProdToCart = await cartServices.addToCart(
-//           idCart,
-//           idProd,
-//         );
-//         if (!newProdToCart) res.json({ msg: "Error add product to cart" });
-//         else res.json(newProdToCart);
-//     } catch (error) {
-//         next(error);
-//     }
-// };
-
 export const addToCart = async (req, res, next) => {
     try {
         const { idCart, idProd } = req.params;

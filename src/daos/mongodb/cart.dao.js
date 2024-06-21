@@ -39,28 +39,29 @@ export default class CartDaoMongoDB {
         }
     }
 
-/*     async addToCart(idCart, idProd) {
+    async addToCart(idCart, idProd) {
         try {
             const existInCart = await this.existProdInCart(idCart, idProd);
-                if(existInCart) {
-                    return await CartModel.findOneAndUpdate(
-                        {_id: idCart, 'products.product': idProd},
-                        { $set: { 'products.$.quantity': existInCart.products[0].quantity + 1 } },
-                        { new: true }
-                    )
-                } else {
-                    return await CartModel.findByIdAndUpdate(
-                      idCart,
-                      { $push: { products: { product: idProd } } },
-                      { new: true }
-                )}
-
+    
+            if (existInCart) {
+                return await CartModel.findOneAndUpdate(
+                    { _id: idCart, 'products.product': idProd },
+                    { $inc: { 'products.$.quantity': 1 } },
+                    { new: true }
+                );
+            } else {
+                return await CartModel.findByIdAndUpdate(
+                    idCart,
+                    { $push: { products: { product: idProd, quantity: 1 } } },
+                    { new: true }
+                );
+            }
         } catch (error) {
             throw new Error(error);
         }
-    } */ //No logré hacerlo funcionar correctamente
+    } 
 
-    async addToCart(idCart, idProd) {
+/*     async addToCart(idCart, idProd) {
         try {
             const cart = await CartModel.findById(idCart);
             if (!cart) {
@@ -80,7 +81,7 @@ export default class CartDaoMongoDB {
         } catch (error) {
             throw new Error(error);
         }
-    }
+    } */
 
     async removeFromCart(idCart, idProd) {
         try {

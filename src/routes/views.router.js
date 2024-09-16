@@ -1,5 +1,4 @@
 import { Router } from 'express';
-// import { loadProductsIndex } from '../server.js';
 import * as productsServices from '../services/products.services.js';
 
 const router = Router();
@@ -19,5 +18,6 @@ router.get('/', async (req, res) => {
 router.get('/realtimeproducts', (req, res) => {
   res.render('realTimeProducts');
 });
+
 
 export default router;

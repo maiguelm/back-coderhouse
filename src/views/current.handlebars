@@ -1,0 +1,12 @@
+
+<div>
+<h2>Hola {{user.first_name}} {{user.last_name}}!</h2>
+<p>Email: {{user.email}}</p>
+<p>Edad: {{user.age}}</p>
+</div>
+
+<a href="/">Ir a inicio</a>
+
+<form action="/api/sessions/logout" method="GET"></form>
+    <button type="submit">Cerrar sesion</button>
+</form>

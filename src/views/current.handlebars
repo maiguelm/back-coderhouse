@@ -1,12 +1,11 @@
-
 <div>
-<h2>Hola {{user.first_name}} {{user.last_name}}!</h2>
-<p>Email: {{user.email}}</p>
-<p>Edad: {{user.age}}</p>
+  <h2>Hola {{user.first_name}} {{user.last_name}}!</h2>
+  <p>Email: {{user.email}}</p>
+  <p>Edad: {{user.age}}</p>
+
+  <a href="/">Ir a inicio</a>
+
+  <form action="/api/sessions/logout" method="GET">
+    <button type="submit">Cerrar sesión</button>
+  </form>
 </div>
-
-<a href="/">Ir a inicio</a>
-
-<form action="/api/sessions/logout" method="GET">
-  <button type="submit">Cerrar sesión</button>
-</form>

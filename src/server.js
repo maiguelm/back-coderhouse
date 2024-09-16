@@ -3,6 +3,7 @@ import morgan from "morgan";
 import handlebars from "express-handlebars";
 import { Server as SocketIOServer } from "socket.io";
 import http from "http";
+import path from "path";
 import { __dirname } from "./utils/path.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import productsRouter from "./routes/products.router.js";
@@ -23,7 +24,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
 
-app.use(express.static(__dirname + "/../public"));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));

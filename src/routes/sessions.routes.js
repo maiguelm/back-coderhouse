@@ -6,7 +6,6 @@ import { hashPassword, comparePassword } from '../utils/encryptPassword.js';
 const router = Router();
 
 router.post('/register', async (req, res) => {
-    console.log(req.body);
     const { first_name, last_name, email, age, password } = req.body;
 
     const existingUser = await User.findOne({ email });
@@ -43,13 +42,20 @@ router.post('/login', async (req, res) => {
 
 router.get('/current', (req, res) => {
     const token = req.cookies['token'];
-    if (!token) return res.status(401).send({ message: 'No token found' });
+    if (!token) return res.status(401).send({ message: 'Usuario no encontrado' });
 
     jwt.verify(token, process.env.SECRET_PASSPORT, async (err, decoded) => {
-        if (err) return res.status(401).send({ message: 'Unauthorized' });
+        if (err) return res.status(401).send({ message: 'No autorizado' });
 
         const user = await User.findById(decoded.id);
-        res.render('current', { user });
+        if (user) {
+            res.render('current', {
+                user, 
+                loggedIn: true
+            });
+        } else {
+            res.status(404).send('Usuario no encontrado');
+        }
     });
 });
 

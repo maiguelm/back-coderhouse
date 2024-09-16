@@ -1,17 +1,27 @@
- <header>
+<header>
+  {{#if loggedIn}}
+    <span>Bienvenido, {{user.first_name}} {{user.last_name}}</span>
+    <form action="/api/sessions/logout" method="GET">
+      <button type="submit">Cerrar sesión</button>
+    </form>
+  {{else}}
     <div class="auth-buttons">
       <a href="/auth/login"><button>Iniciar Sesión</button></a>
       <a href="/auth/register"><button>Registrarse</button></a>
     </div>
-  </header>
+  {{/if}}
+</header>
 
 <h1>Lista de Productos</h1>
 <ul>
   {{#each products}}
     <li>
-      <strong>{{this.title}}</strong> - ${{this.price}} - {{this.category}}
+      <strong>{{this.title}}</strong>
+      - ${{this.price}}
+      -
+      {{this.category}}
       {{#each this.thumbnails}}
-        <img class= "img-home" src="{{this}}">
+        <img class="img-home" src="{{this}}" />
       {{/each}}
     </li>
   {{/each}}

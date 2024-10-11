@@ -14,6 +14,7 @@ import "dotenv/config";
 import * as productsServices from "./services/products.services.js";
 import authRouter from "./routes/auth.router.js";
 import sessionsRouter from "./routes/sessions.routes.js"
+import { authenticateJWT } from "./middlewares/authMiddleware.js";
 
 import session from "express-session";
 import passport from "passport";
@@ -23,6 +24,8 @@ import cookieParser from "cookie-parser";
 const app = express();
 const server = http.createServer(app);
 const io = new SocketIOServer(server);
+
+app.use(authenticateJWT);
 
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
@@ -47,12 +50,17 @@ configurePassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.engine('handlebars', handlebars.engine({
+const hbs = handlebars.create({
+  helpers: {
+    eq: (a, b) => a === b,
+  },
   runtimeOptions: {
     allowProtoPropertiesByDefault: true,
     allowProtoMethodsByDefault: true
   }
-}));
+});
+
+app.engine('handlebars', hbs.engine);
 app.set("view engine", "handlebars");
 app.set("views", `${__dirname}/../views`);
 
@@ -114,6 +122,13 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("Desconexión con éxito");
+  });
+
+  socket.on('cartUpdated', (totalQuantity) => {
+    const cartCountElement = document.getElementById('cart-count');
+    if (cartCountElement) {
+      cartCountElement.textContent = totalQuantity;
+    }
   });
 });
 

@@ -151,3 +151,11 @@ li {
 .login-container button:hover {
   background-color: #0056b3;
 }
+
+.ticket-summary{
+  background-color: #007bff;
+}
+
+.failed-products{
+  color: rgb(233, 18, 18);
+}

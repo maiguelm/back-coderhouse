@@ -1,30 +1,50 @@
 <header>
   {{#if loggedIn}}
-    <span>Bienvenido, {{user.first_name}} {{user.last_name}}</span>
-    <form action="/api/sessions/logout" method="GET">
-      <button type="submit">Cerrar sesión</button>
-    </form>
+  <span>Bienvenido, {{user.first_name}} {{user.last_name}}</span>
+  <form action="/api/sessions/logout" method="GET">
+    <button type="submit">Cerrar sesión</button>
+  </form>
+
+  {{#if (eq user.role "admin")}}
+
+  <a href="/realtimeproducts"><button>Añadir Productos</button></a>
   {{else}}
-    <div class="auth-buttons">
-      <a href="/auth/login"><button>Iniciar Sesión</button></a>
-      <a href="/auth/register"><button>Registrarse</button></a>
+  <div>
+    <div class="cart-icon">
+      <a href="/cart">
+        <i class="fas fa-shopping-cart"></i>
+      </a>
+      <span id="cart-count">{{cart.totalQuantity}}</span>
     </div>
+  </div>
+  {{/if}}
+  {{else}}
+  <div class="auth-buttons">
+    <a href="/auth/login"><button>Iniciar Sesión</button></a>
+    <a href="/auth/register"><button>Registrarse</button></a>
+  </div>
   {{/if}}
 </header>
 
 <h1>Lista de Productos</h1>
 <ul>
   {{#each products}}
-    <li>
-      <strong>{{this.title}}</strong>
-      - ${{this.price}}
-      -
-      {{this.category}}
-      {{#each this.thumbnails}}
-        <img class="img-home" src="{{this}}" />
-      {{/each}}
-    </li>
+  <li>
+    <strong>{{this.title}}</strong>
+    - ${{this.price}}
+    - {{this.category}}
+
+    {{#if ../loggedIn}}
+      {{#if (eq ../user.role "user")}}
+        <form id="add-to-cart-form" data-product-id="{{this._id}}" onsubmit="addToCart(event)">
+          <button type="submit">Añadir al carrito</button>
+        </form>
+      {{/if}}
+    {{/if}}
+
+    {{#each this.thumbnails}}
+    <img class="img-home" src="{{this}}" />
+    {{/each}}
+  </li>
   {{/each}}
 </ul>
-
-<a href="/realtimeproducts"><button>Añadir Productos</button></a>

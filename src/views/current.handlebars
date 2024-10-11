@@ -2,6 +2,7 @@
   <h2>Hola {{user.first_name}} {{user.last_name}}!</h2>
   <p>Email: {{user.email}}</p>
   <p>Edad: {{user.age}}</p>
+  <p>Rol: {{user.role}}</p>
 
   <a href="/">Ir a inicio</a>
 
@@ -9,3 +10,28 @@
     <button type="submit">Cerrar sesión</button>
   </form>
 </div>
+
+{{#if ticket}}
+  <div class="ticket-summary">
+    <h3>Resumen de tu compra:</h3>
+    <p>Ticket ID: {{ticket.id}}</p>
+    <p>Total: ${{ticket.total}}</p>
+    <ul>
+      {{#each ticket.products}}
+        <li>{{this.title}} - ${{this.price}}</li>
+      {{/each}}
+    </ul>
+  </div>
+{{/if}}
+
+{{#if failedProducts}}
+  <div class="failed-products">
+    <h3>Los siguientes productos no pudieron ser comprados:</h3>
+    <ul>
+      {{#each failedProducts}}
+        <li>{{this.title}} - ${{this.price}}</li>
+      {{/each}}
+    </ul>
+  </div>
+{{/if}}
+

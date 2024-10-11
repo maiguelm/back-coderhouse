@@ -60,8 +60,8 @@ export const createProduct = async (obj) => {
 	try {
 		return await productDao.createProduct(obj);
 	} catch (error) {
-		if (error.code === 11000) { // Código de error de clave duplicada
-            throw new Error('Duplicate key error: product code already exists');
+		if (error.code === 11000) { 
+            throw new Error('Ese código ya existe');
         }
         throw new Error(error);
 	}

@@ -89,3 +89,30 @@ productForm.addEventListener('submit', (e) => {
     productForm.reset();
   }
 });
+
+async function addToCart(event) {
+  event.preventDefault(); // Previene que se recargue la página
+  
+  const productId = event.target.getAttribute('data-product-id'); // Obtener el ID del producto
+  const cartId = "{{user.cart}}"; // Asegúrate de que user.cart esté disponible en la vista
+
+  try {
+    const response = await fetch(`/${cartId}/product/${productId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      // Actualizar el contador del carrito si la solicitud fue exitosa
+      const data = await response.json();
+      const cartCount = document.getElementById('cart-count');
+      cartCount.textContent = data.totalQuantity; // Actualizar el número de productos en el carrito
+    } else {
+      console.error('Error al añadir el producto al carrito');
+    }
+  } catch (error) {
+    console.error('Error en la solicitud:', error);
+  }
+}

@@ -1,7 +1,13 @@
 import mongoose from "mongoose";
 import { CartModel } from "./models/cart.model.js";
+import ProductDaoMongoDB from "./products.dao.js";
+import Ticket from "./models/ticket.model.js"
 
 export default class CartDaoMongoDB {
+
+    constructor() {
+        this.productDao = new ProductDaoMongoDB();
+    }
 
     async getAllCarts() {
         try {
@@ -60,28 +66,6 @@ export default class CartDaoMongoDB {
             throw new Error(error);
         }
     } 
-
-/*     async addToCart(idCart, idProd) {
-        try {
-            const cart = await CartModel.findById(idCart);
-            if (!cart) {
-                throw new Error("Carrito no encontrado");
-            }
-    
-            const productInCart = cart.products.find(item => item.product.toString() === idProd);
-            if (productInCart) {
-                productInCart.quantity += 1;
-                await cart.save();
-                return cart;
-            } else {
-                cart.products.push({ product: idProd, quantity: 1 });
-                await cart.save();
-                return cart;
-            }
-        } catch (error) {
-            throw new Error(error);
-        }
-    } */
 
     async removeFromCart(idCart, idProd) {
         try {
@@ -156,4 +140,56 @@ export default class CartDaoMongoDB {
             throw new Error(error);
         }
       }
+
+      async purchaseCart(idCart, userEmail) {
+        try {
+            const cart = await this.getCartById(idCart);
+            if (!cart) {
+                throw new Error("Carrito no encontrado");
+            }
+
+            let totalAmount = 0;
+            const failedProducts = [];
+
+            // Iterar sobre los productos en el carrito
+            for (const item of cart.products) {
+                const product = await this.productDao.getProductById(item.product); // Usa this.productDao
+                if (product && product.stock >= item.quantity) {
+                    product.stock -= item.quantity;
+                    totalAmount += product.price * item.quantity;
+                    await product.save();
+                } else {
+                    failedProducts.push({
+                        product: item.product,
+                        requestedQuantity: item.quantity,
+                        availableStock: product ? product.stock : 0,
+                    });
+                }
+            }
+
+            // Si hay productos fallidos, devolver compra parcial
+            if (failedProducts.length > 0) {
+                return { completed: false, failedProducts };
+            }
+
+            // Si la compra fue exitosa, generar un ticket
+            const generateTicketCode = () => {
+                return Math.random().toString(36).substr(2, 9).toUpperCase(); // Genera un código alfanumérico de 9 caracteres
+            };
+            const ticket = await Ticket.create({
+                purchaser: userEmail,
+                amount: totalAmount,
+                purchaseDate: new Date(),
+                code: generateTicketCode()
+            });
+
+            // Limpiar el carrito después de la compra
+            await this.clearCart(idCart);
+
+            return { completed: true, ticket };
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
+
 }

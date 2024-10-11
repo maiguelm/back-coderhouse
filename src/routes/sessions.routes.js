@@ -2,6 +2,7 @@ import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../daos/mongodb/models/user.model.js';
 import { hashPassword, comparePassword } from '../utils/encryptPassword.js';
+import { userDTO } from '../daos/mongodb/dto/user.dto.js';
 
 const router = Router();
 
@@ -49,8 +50,10 @@ router.get('/current', (req, res) => {
 
         const user = await User.findById(decoded.id);
         if (user) {
+            const userData = userDTO(user);
+            console.log(userData);
             res.render('current', {
-                user, 
+                user: userData,
                 loggedIn: true
             });
         } else {

@@ -15,7 +15,7 @@
   <div class="ticket-summary">
     <h3>Resumen de tu compra:</h3>
     <p>Ticket ID: {{ticket.id}}</p>
-    <p>Total: ${{ticket.total}}</p>
+    <p>Total: ${{ticket.amount}}</p>
     <ul>
       {{#each ticket.products}}
         <li>{{this.title}} - ${{this.price}}</li>
@@ -29,7 +29,7 @@
     <h3>Los siguientes productos no pudieron ser comprados:</h3>
     <ul>
       {{#each failedProducts}}
-        <li>{{this.title}} - ${{this.price}}</li>
+        <li>{{this.product.title}} - ${{this.product.price}} (Solicitado: {{this.requestedQuantity}}, Stock disponible: {{this.availableStock}})</li>
       {{/each}}
     </ul>
   </div>

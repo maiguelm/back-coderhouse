@@ -8,7 +8,7 @@ export const sendPurchaseEmail = async (userEmail, ticket, products) => {
       pass: process.env.MAIL_SECRET
     },
 	tls: {
-		rejectUnauthorized: false, // Desactiva la verificación de certificados
+		rejectUnauthorized: false, 
 	  },
   });
 
@@ -21,15 +21,15 @@ export const sendPurchaseEmail = async (userEmail, ticket, products) => {
     to: userEmail,
     subject: 'Resumen de tu compra',
     html: `
-      <h1>Gracias por tu compra</h1>
-      <p>Este es el resumen de tu compra:</p>
-      <ul>
-        ${productList}
-      </ul>
-      <p>Total pagado: $${ticket.amount}</p>
-      <p>Código de ticket: ${ticket.code}</p>
-      <p>Fecha de la compra: ${ticket.purchaseDate}</p>
-    `,
+	<h1>Gracias por tu compra</h1>
+	<p>Este es el resumen de tu compra:</p>
+	<ul>
+	  ${productList}
+	</ul>
+	<p>Total pagado: $${ticket.amount}</p>
+	<p>Código de ticket: ${ticket.code}</p>
+	<p>Fecha de la compra: ${ticket.purchaseDate ? ticket.purchaseDate.toLocaleString() : 'No disponible'}</p>
+  `,
   };
 
   try {

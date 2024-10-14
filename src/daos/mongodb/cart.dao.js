@@ -27,7 +27,7 @@ export default class CartDaoMongoDB {
 
     async getCartById(id) {
         try {
-            return await CartModel.findById(id).populate("products.product"); //originalmente se usaba el métido .lean(). Chequear por si algo no funciona respecto a lasfuncionalidades anteriores
+            return await CartModel.findById(id).populate("products.product"); //originalmente se usaba el método .lean(). Chequear por si algo no funciona respecto a lasfuncionalidades anteriores
         } catch (error) {
             throw new Error(error);
         }

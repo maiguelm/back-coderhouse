@@ -4,6 +4,8 @@ const cartDao = new CartDaoMongoDB();
 import ProductDaoMongoDB from "../daos/mongodb/products.dao.js";
 const productDao = new ProductDaoMongoDB();
 
+import { sendPurchaseEmail } from "../services/email.services.js"
+
 export const getAllCarts = async () => {
   try {
     return await cartDao.getAllCarts();
@@ -167,7 +169,17 @@ export const purchaseCart = async (idCart, userEmail) => {
     try {
       const purchaseResult = await cartDao.purchaseCart(idCart, userEmail);
       if (purchaseResult.completed) {
-        return { message: "Compra finalizada", ticket: purchaseResult.ticket };
+        const { ticket } = purchaseResult;
+        const cart = await cartDao.getCartById(idCart);
+        const products = cart.products.map(item => ({
+          title: item.product.title,
+          quantity: item.quantity,
+          price: item.product.price,
+        }));
+  
+        await sendPurchaseEmail(userEmail, ticket, products);
+  
+        return { message: 'Compra finalizada', ticket };
       }
       return {
         message: "Compra parcial",

@@ -9,6 +9,7 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import productsRouter from "./routes/products.router.js";
 import cartRouter from "./routes/cart.router.js";
 import viewsRouter from "./routes/views.router.js";
+// import emailRouter from "./routes/email.router.js";
 import { initMongoDB } from "./daos/mongodb/connection.js";
 import "dotenv/config";
 import * as productsServices from "./services/products.services.js";
@@ -69,6 +70,7 @@ app.use("/api/products", productsRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/auth", authRouter);
+// app.use("/mail", emailRouter);
 
 app.use(errorHandler);
 

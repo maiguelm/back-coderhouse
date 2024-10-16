@@ -9,13 +9,13 @@
 <main>
   <h2>Productos en el Carrito</h2>
   <ul>
-    {{#each cart.products}}
-    <li>
-      <strong>{{this.product.title}}</strong> - ${{this.product.price}} 
-      <span>Cantidad: {{this.quantity}}</span>
-    </li>
+     {{#each cart.products}}
+      <li>
+        <strong>{{this.product.title}}</strong> - ${{this.product.price}} 
+        <span>Cantidad: {{this.quantity}}</span>
+      </li>
     {{else}}
-    <li>No hay productos en el carrito.</li>
+      <li>No hay productos en el carrito.</li>
     {{/each}}
   </ul>
   <a href="/api/carts/{{cart._id}}/purchase"><button>Proceder a la compra</button></a>

@@ -7,7 +7,7 @@ const router = Router();
 
 router.get('/', cartControllers.getAllCarts);
 router.get('/:idCart', cartControllers.getCartById);
-router.get('/:idCart/view', cartControllers.viewCart);
+router.get('/view/:idCart', cartControllers.viewCart);
 router.post('/', cartControllers.createCart);
 router.post('/:idCart/product/:idProd',passport.authenticate('jwt', { session: false }), isUser, cartControllers.addToCart);
 router.put('/:idCart', cartControllers.updateCart);

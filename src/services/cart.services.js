@@ -24,7 +24,14 @@ export const createCart = async () => {
 
 export const getCartById = async (idCart) => {
   try {
-    return await cartDao.getCartById(idCart);
+    const cart = await cartDao.getCartById(idCart);
+
+    if (cart) {
+      cart.totalQuantity = cart.products.reduce((total, item) => total + item.quantity, 0);
+      cart.totalPrice = cart.products.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    }
+
+    return cart;
   } catch (error) {
     throw new Error(error);
   }

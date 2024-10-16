@@ -131,18 +131,15 @@ export const clearCart = async (req, res, next) => {
 
 export const viewCart = async (req, res, next) => {
   const { idCart } = req.params;
-  
   try {
-    const cartData = await cartServices.viewCart(idCart);
-    if (!cartData) {
+      const cart = await cartServices.getCartById(idCart);
+      if (!cart) {
           return res.status(404).send("Carrito no encontrado");
-        }
-        
-        res.render("cart", {
-          cart: cartData
-        });
+      }
+      console.log(cart);
+      res.render("cart", { cart }); 
   } catch (error) {
-      next(error); 
+      next(error);
   }
 };
 
@@ -152,7 +149,6 @@ export const purchaseCart = async (req, res) => {
 
   try {
       const purchaseResult = await cartServices.purchaseCart(idCart, userEmail);
-
       console.log("Resultado de la compra:", purchaseResult); 
 
       if (purchaseResult.completed) {

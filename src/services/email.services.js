@@ -1,41 +1,50 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 export const sendPurchaseEmail = async (userEmail, ticket, products) => {
   const transporter = nodemailer.createTransport({
-    service: 'gmail', 
+    service: "gmail",
     auth: {
       user: process.env.USER_EMAIL,
-      pass: process.env.MAIL_SECRET
+      pass: process.env.MAIL_SECRET,
     },
-	tls: {
-		rejectUnauthorized: false, 
-	  },
+    tls: {
+      rejectUnauthorized: false,
+    },
   });
 
-  const productList = products.map(product => 
-    `<li>${product.title} - Cantidad: ${product.quantity} - Precio: $${product.price}</li>`
-  ).join('');
+  console.log(products);
+
+  const productList = products
+    .map(
+      (product) =>
+        `<li>${product.title} - Cantidad: ${product.quantity} - Precio: $${product.price}</li>`
+    )
+    .join("");
 
   const mailOptions = {
     from: process.env.EMAIL_USER,
     to: userEmail,
-    subject: 'Resumen de tu compra',
+    subject: "Resumen de tu compra",
     html: `
 	<h1>Gracias por tu compra</h1>
 	<p>Este es el resumen de tu compra:</p>
 	<ul>
-	  ${productList}
-	</ul>
+    ${products
+      .map((product) => `<li>${product.title} - $${product.price}</li>`)
+      .join("")}
+ 	</ul>
 	<p>Total pagado: $${ticket.amount}</p>
 	<p>Código de ticket: ${ticket.code}</p>
-	<p>Fecha de la compra: ${ticket.purchaseDate ? ticket.purchaseDate.toLocaleString() : 'No disponible'}</p>
+	<p>Fecha de la compra: ${
+    ticket.purchaseDate ? ticket.purchaseDate.toLocaleString() : "No disponible"
+  }</p>
   `,
   };
 
   try {
     await transporter.sendMail(mailOptions);
-    console.log('Correo enviado exitosamente a', userEmail);
+    console.log("Correo enviado exitosamente a", userEmail);
   } catch (error) {
-    console.error('Error al enviar el correo:', error);
+    console.error("Error al enviar el correo:", error);
   }
 };

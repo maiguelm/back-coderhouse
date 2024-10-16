@@ -4,7 +4,7 @@ import User from "../daos/mongodb/models/user.model.js";
 import UserRepository from '../repositories/user.repository.js';
 
 export const registerUser = async (req, res) => {
-  const { first_name, last_name, email, age, password } = req.body;
+  const { first_name, last_name, email, age, password, role } = req.body;
 
   try {
     const existingUser = await UserRepository.findByEmail(email);
@@ -19,9 +19,9 @@ export const registerUser = async (req, res) => {
       email,
       age,
       password: hashedPassword,
-      role: "user",
+      role: role || "user",
     };
-
+    console.log("Nuevo usuario creado", newUser)
     await UserRepository.createUser(newUser);
 
     const token = jwt.sign({ id: newUser._id, role: newUser.role }, process.env.SECRET_PASSPORT, { expiresIn: "1h" });

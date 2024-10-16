@@ -1,4 +1,5 @@
 import * as cartServices from "../services/cart.services.js";
+import { sendPurchaseEmail } from '../services/email.services.js';
 
 export const getAllCarts = async (req, res) => {
   try {
@@ -146,25 +147,32 @@ export const viewCart = async (req, res, next) => {
 };
 
 export const purchaseCart = async (req, res) => {
-          const { idCart } = req.params;
-          const userEmail = req.user.email;
-        
-          try {
-            const purchaseResult = await cartServices.purchaseCart(idCart, userEmail);
-        
-            if (purchaseResult.completed) {
-              return res.render("current", {
-                user: req.user,
-                ticket: purchaseResult.ticket,
-              });
-            } else {
-              return res.render("current", {
-                user: req.user,
-                ticket: null,
-                failedProducts: purchaseResult.failedProducts,
-              });
-            }
-          } catch (error) {
-            return res.status(500).send({ error: error.message });
-          }
-        };
+  const { idCart } = req.params;
+  const userEmail = req.user.email;
+
+  try {
+      const purchaseResult = await cartServices.purchaseCart(idCart, userEmail);
+
+      console.log("Resultado de la compra:", purchaseResult); 
+
+      console.log("Productos exitosos:", purchaseResult.products); 
+
+      if (purchaseResult.completed) {
+          await sendPurchaseEmail(userEmail, purchaseResult.ticket, purchaseResult.products); 
+
+          return res.render("current", {
+              user: req.user,
+              ticket: purchaseResult.ticket,
+              products: purchaseResult.products,
+          });
+      } else {
+          return res.render("current", {
+              user: req.user,
+              ticket: null,
+              failedProducts: purchaseResult.failedProducts, 
+          });
+      }
+  } catch (error) {
+      return res.status(500).send({ error: error.message });
+  }
+};

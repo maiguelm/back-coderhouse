@@ -154,6 +154,7 @@ export default class CartDaoMongoDB {
             }
 
             let totalAmount = 0;
+            const successfulProducts = [];
             const failedProducts = [];
 
             for (const item of cart.products) {
@@ -162,6 +163,13 @@ export default class CartDaoMongoDB {
                     product.stock -= item.quantity;
                     totalAmount += product.price * item.quantity;
                     await product.save();
+
+                    successfulProducts.push({
+                        title: product.title,
+                        quantity: item.quantity,
+                        price: product.price
+                    });
+
                 } else {
                     failedProducts.push({
                         product: {
@@ -182,7 +190,7 @@ export default class CartDaoMongoDB {
                 }));
                 await cart.save();
 
-                return { completed: false, failedProducts };
+                return { completed: false, failedProducts, successfulProducts };
             }
 
             const generateTicketCode = () => {
@@ -196,12 +204,12 @@ export default class CartDaoMongoDB {
                 code: generateTicketCode(),
             });
 
-            console.log("Ticket creado:", ticket);
-            console.log("Productos en el carrito:", cart.products);
+            // console.log("Ticket creado:", ticket);
+            // console.log("Productos en el carrito:", successfulProducts);
 
             await this.clearCart(idCart);
 
-            return { completed: true, ticket };
+            return { completed: true, ticket, products: successfulProducts };
         } catch (error) {
             throw new Error(error.message);
         }

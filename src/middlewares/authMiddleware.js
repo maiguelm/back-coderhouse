@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 export const isAdmin = (req, res, next) => {
+	console.log('Usuario:', req.user)
 	if (req.user && req.user.role === 'admin') {
 		return next();
 	}

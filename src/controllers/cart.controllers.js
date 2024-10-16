@@ -155,8 +155,6 @@ export const purchaseCart = async (req, res) => {
 
       console.log("Resultado de la compra:", purchaseResult); 
 
-      console.log("Productos exitosos:", purchaseResult.products); 
-
       if (purchaseResult.completed) {
           await sendPurchaseEmail(userEmail, purchaseResult.ticket, purchaseResult.products); 
 

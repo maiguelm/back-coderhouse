@@ -204,8 +204,8 @@ export default class CartDaoMongoDB {
                 code: generateTicketCode(),
             });
 
-            // console.log("Ticket creado:", ticket);
-            // console.log("Productos en el carrito:", successfulProducts);
+            console.log("Ticket creado:", ticket);
+            console.log("Productos en el carrito:", successfulProducts);
 
             await this.clearCart(idCart);
 

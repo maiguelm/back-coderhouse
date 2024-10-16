@@ -76,7 +76,7 @@ export default class ProductDaoMongoDB {
 		try {
 			const objectId = new mongoose.Types.ObjectId(id);
 			const updProduct = await ProductModel.findByIdAndUpdate(objectId, obj, { new: true });
-			console.log(updProduct)
+			// console.log(updProduct)
 			return updProduct;
 		} catch (error) {
 			throw new Error(error);

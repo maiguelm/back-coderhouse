@@ -35,8 +35,8 @@ export const sendPurchaseEmail = async (userEmail, ticket, products) => {
  	</ul>
 	<p>Total pagado: $${ticket.amount}</p>
 	<p>Código de ticket: ${ticket.code}</p>
-	<p>Fecha de la compra: ${
-    ticket.purchaseDate ? ticket.purchaseDate.toLocaleString() : "No disponible"
+	<p>Fecha y hora de la compra: ${
+    ticket.purchase_datetime ? ticket.purchase_datetime.toLocaleString() : "No disponible"
   }</p>
   `,
   };
